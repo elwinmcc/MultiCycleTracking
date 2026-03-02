@@ -6,7 +6,7 @@ Runs the model against current + backtest scenarios and produces
 a self-contained HTML dashboard with Chart.js visualizations.
 
 Usage:
-    python generate_dashboard.py          # writes dashboard.html
+    python generate_dashboard.py          # writes index.html
     python generate_dashboard.py --open   # writes and opens in browser
 """
 
@@ -681,7 +681,7 @@ def main():
     json_blob = json.dumps(data, default=str)
     html = HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_blob)
 
-    out_path = "dashboard.html"
+    out_path = "index.html"
     with open(out_path, "w") as f:
         f.write(html)
 
