@@ -497,9 +497,10 @@ class BTCModelV72:
         single_day_max = self.data.max_single_day_flow_7d
         mcap = self.data.market_cap
 
-        flow_7d_pct = (flow_7d * 1000 / mcap) if mcap > 0 else 0
-        flow_30d_pct = (flow_30d * 1000 / mcap) if mcap > 0 else 0
-        flow_90d_pct = (flow_90d * 1000 / mcap) if mcap > 0 else 0
+        # Flows and mcap are both in $B — divide directly for percentage
+        flow_7d_pct = (flow_7d / mcap * 100) if mcap > 0 else 0
+        flow_30d_pct = (flow_30d / mcap * 100) if mcap > 0 else 0
+        flow_90d_pct = (flow_90d / mcap * 100) if mcap > 0 else 0
 
         weekly_rate = flow_7d_pct * 52
         monthly_rate = flow_30d_pct * 12
