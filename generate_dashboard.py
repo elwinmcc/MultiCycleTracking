@@ -20,15 +20,35 @@ from btc_model_v72 import (
     backtest_january_2026_breakdown,
 )
 
+try:
+    from fetch_live_data import fetch_live_market_data
+    HAS_LIVE_FETCH = True
+except ImportError:
+    HAS_LIVE_FETCH = False
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Collect model results for all scenarios
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _get_live_or_static():
+    """Try live data first, fall back to hardcoded snapshot."""
+    if HAS_LIVE_FETCH:
+        try:
+            data = fetch_live_market_data()
+            price = data.btc_price
+            label = f"Live (${price/1000:.1f}K)"
+            return label, data
+        except Exception as e:
+            print(f"  [WARN] Live fetch failed ({e}), using static snapshot")
+    return "Feb 2026 Now ($68.5K)", get_current_market_data()
+
+
 def collect_dashboard_data() -> dict:
+    live_label, live_data = _get_live_or_static()
     scenarios = [
         ("Oct 2025 ATH ($126K)", backtest_october_2025_ath()),
         ("Jan 2026 Crash ($85K)", backtest_january_2026_breakdown()),
-        ("Feb 2026 Now ($68.5K)", get_current_market_data()),
+        (live_label, live_data),
     ]
 
     results = []

@@ -1440,7 +1440,14 @@ def backtest_january_2026_breakdown() -> MarketDataV72:
 
 
 if __name__ == "__main__":
-    data = get_current_market_data()
+    try:
+        from fetch_live_data import fetch_live_market_data
+        data = fetch_live_market_data()
+        print("(Using live data)")
+    except (ImportError, Exception):
+        data = get_current_market_data()
+        print("(Using static snapshot)")
+
     thresholds = CalibratedThresholds()
     model = BTCModelV72(data, thresholds)
     result = model.run_full_analysis()
